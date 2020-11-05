@@ -44,10 +44,11 @@ def txt_to_dataframe(filename, condition):
     all_data_dict = {}
     for key in TEXT_TO_VAL:
         all_data_dict[key['name']] = []
+    tick = dt.now()
     with open(filename) as f:
         for i, line in enumerate(f):
             if i % 100000 == 0:
-                print(i)
+                print(i, len(all_data_dict['id']), dt.now() - tick)
             if condition['name'] == 'num_rows' and i == condition['value']:
                 break
             key = [x for x in TEXT_TO_VAL if x['name'] == condition['name']]
@@ -56,6 +57,8 @@ def txt_to_dataframe(filename, condition):
                 value = line.split(key['start'])[1].split(key['end'])[0]
                 if value != condition['value']:
                     continue
+            if condition['name'] == 'count':
+                continue
             for key in TEXT_TO_VAL:
                 value = line.split(key['start'])[1].split(key['end'])[0]
                 if value.lower() == 'false':
@@ -67,6 +70,10 @@ def txt_to_dataframe(filename, condition):
                 value = key['type'](value)
                 # print(f"\t {key['name']}: {value} ({type(value)})")
                 all_data_dict[key['name']].append(value)
+    print(dt.now() - tick)
+    if condition['name'] == 'count':
+        print(i+1)
+        return pd.DataFrame(data=[i+1], columns=['num_of_rows'])
     df = pd.DataFrame.from_dict(all_data_dict).set_index('id')
     return df
 
@@ -74,6 +81,8 @@ def txt_to_dataframe(filename, condition):
 
 
 file = input("enter file name: ")
+if file == '':
+    file = '/datashare/busFile'
 cond_orig = input("enter condition: ")
 if cond_orig == '':
     cond_orig = 'num_rows 200'
