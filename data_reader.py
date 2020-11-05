@@ -75,8 +75,7 @@ def txt_to_dataframe(filename, condition):
     print(dt.now() - tick)
     if condition['name'] == 'count':
         td = (dt.now() - tick).total_seconds()
-        print(f"{i / 10000}*10^5, {len(all_data_dict['id'])}, {round(td, 3)} sec, "
-              f"pace: {round(i + 1 / td, 3)} rows/sec")
+        print(f"{i / 10000}*10^5, {len(all_data_dict['id'])}, {round(td, 3)} sec, pace: {round(i + 1 / td, 3)} rows/sec")
         return pd.DataFrame(data=[i+1], columns=['num_of_rows'])
     df = pd.DataFrame.from_dict(all_data_dict).set_index('id')
     return df
