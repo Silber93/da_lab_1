@@ -1,7 +1,7 @@
 import random
 
 FILE_MAIN = '/datashare/busFile'
-SIZE = 237143372
+SIZE = 237143372.0
 
 proportion = 1 / float(1000)
 
