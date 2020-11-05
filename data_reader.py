@@ -52,14 +52,14 @@ def txt_to_dataframe(filename, condition):
                 print(str(i / 10000) + "*10^5, " + str(len(all_data_dict["id"])) + str(round(td, 3)) + " sec, pace: " + str(round(i+1 / td, 3)) + " rows/sec")
             if condition['name'] == 'num_rows' and i == condition['value']:
                 break
+            if condition['name'] == 'count':
+                continue
             key = [x for x in TEXT_TO_VAL if x['name'] == condition['name']]
             if len(key) > 0:
                 key = key[0]
                 value = line.split(key['start'])[1].split(key['end'])[0]
                 if value != condition['value']:
                     continue
-            if condition['name'] == 'count':
-                continue
             for key in TEXT_TO_VAL:
                 value = line.split(key['start'])[1].split(key['end'])[0]
                 if value.lower() == 'false':
@@ -71,10 +71,10 @@ def txt_to_dataframe(filename, condition):
                 value = key['type'](value)
                 # print(f"\t {key['name']}: {value} ({type(value)})")
                 all_data_dict[key['name']].append(value)
-    print(dt.now() - tick)
+    print("finished")
     if condition['name'] == 'count':
         td = (dt.now() - tick).total_seconds()
-        print(f"{i / 10000}*10^5, {len(all_data_dict['id'])}, {round(td, 3)} sec, pace: {round(i + 1 / td, 3)} rows/sec")
+        print(str(i / 10000) + "*10^5, " + str(len(all_data_dict["id"])) + str(round(td, 3)) + " sec, pace: " + str(round(i+1 / td, 3)) + " rows/sec")
         return pd.DataFrame(data=[i+1], columns=['num_of_rows'])
     df = pd.DataFrame.from_dict(all_data_dict).set_index('id')
     return df
