@@ -7,7 +7,7 @@ TEXT_TO_VAL = [
     {'name': 'congestion', 'start': '"congestion":', 'end': ',', 'type': bool},
     {'name': 'lineId', 'start': '"lineId":"', 'end': '"', 'type': str},
     {'name': 'vehicleId', 'start': '"vehicleId":', 'end': ',', 'type': str},
-    {'name': 'timestamp', 'start': '"$numberLong":"', 'end': '"', 'type': float},  # TODO: Change type to dt.timestamp
+    {'name': 'timestamp', 'start': '"$numberLong":"', 'end': '"', 'type': dt.fromtimestamp},  # TODO: Change type to dt.datetime
     {'name': 'areaId', 'start': '"areaId":', 'end': ',', 'type': str},
     {'name': 'areaId1', 'start': '"areaId1":', 'end': ',', 'type': str},
     {'name': 'areaId2', 'start': '"areaId2":', 'end': ',', 'type': str},
@@ -28,7 +28,7 @@ TEXT_TO_VAL = [
     {'name': 'poiId', 'start': '"poiId":', 'end': ',', 'type': str},
     {'name': 'poiId2', 'start': '"poiId2":', 'end': ',', 'type': str},
     {'name': 'systemTimestamp', 'start': '"systemTimestamp":', 'end': ',', 'type': float},
-    {'name': 'calendar', 'start': '"$numberLong":"', 'end': '"', 'type': float},  # TODO: Change type to dt.timestamp
+    {'name': 'calendar', 'start': '"$numberLong":"', 'end': '"', 'type': dt.fromtimestamp},  # TODO: Change type to dt.datetime
     {'name': 'filteredActualDelay', 'start': '"filteredActualDelay":', 'end': ',', 'type': float},
     {'name': 'atStop', 'start': '"atStop":', 'end': ',', 'type': bool},
     {'name': 'dateType', 'start': '"dateType":', 'end': ',', 'type': str},  # TODO: Check if type is actually float
@@ -37,20 +37,34 @@ TEXT_TO_VAL = [
     {'name': 'probability', 'start': '"probability":', 'end': ',', 'type': float},
     {'name': 'anomaly', 'start': '"anomaly":', 'end': ',', 'type': bool},
     {'name': 'loc_type', 'start': '"loc":{"type":"', 'end': '"', 'type': str},
-    # {'name': 'coordinates', 'start': '"coordinates":', 'end': '}', 'type': list}, TODO: Check if necessary
+    # {'name': 'coordinates', 'start': '"coordinates":', 'end': '}', 'type': list}, TODO: Extract after loop
 ]
 
-def txt_to_dataframe(filename, num_rows):
+def txt_to_dataframe(filename, condition):
     all_data_dict = {}
     for key in TEXT_TO_VAL:
         all_data_dict[key['name']] = []
     with open(filename) as f:
         for i, line in enumerate(f):
-            if i == num_rows:
+            if i % 100000 == 0:
+                print(i)
+            if condition['name'] == 'num_rows' and i == condition['value']:
                 break
+            key = [x for x in TEXT_TO_VAL if x['name'] == condition['name']]
+            if len(key) > 0:
+                key = key[0]
+                value = line.split(key['start'])[1].split(key['end'])[0]
+                if value != condition['value']:
+                    continue
             print(i, line[:-1])  # last char in original line is '\n'
             for key in TEXT_TO_VAL:
                 value = line.split(key['start'])[1].split(key['end'])[0]
+                if value.lower() == 'false':
+                    value = False
+                elif value.lower() =='true':
+                    value = True
+                elif key['name'] in ['timestamp', 'calendar']:
+                    value = int(int(value)/1000)
                 value = key['type'](value)
                 # print(f"\t {key['name']}: {value} ({type(value)})")
                 all_data_dict[key['name']].append(value)
@@ -60,9 +74,16 @@ def txt_to_dataframe(filename, num_rows):
 
 
 
-file = "sampled_200.txt"
-rows_to_show = 200
+file = input("enter file name: ")
+cond_orig = input("enter condition: ")
+if cond_orig == '':
+    cond_orig = 'num_rows 200'
+cond = {'name': cond_orig.split()[0], 'value': cond_orig.split()[1]}
 
-df = txt_to_dataframe(file, rows_to_show)
+
+
+
+
+df = txt_to_dataframe(file, cond)
 print(df)
-df.to_csv('sampled_' + str(rows_to_show) + '.csv')
+df.to_csv('sampled_' + cond_orig + '.csv')
