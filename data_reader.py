@@ -44,12 +44,13 @@ def txt_to_dataframe(filename, condition):
     all_data_dict = {}
     for key in TEXT_TO_VAL:
         all_data_dict[key['name']] = []
-    tick = dt.now()
+    tick = dt.timestamp(dt.now())
     with open(filename) as f:
         for i, line in enumerate(f):
             if i % 100000 == 0:
-                td = (dt.now() - tick).seconds
-                print(str(i / 100000) + "*10^5, " + str(len(all_data_dict["id"])) + str(round(td, 3)) + " sec, pace: " + str(round(i+1 / (td + 0.0001), 3)) + " rows/sec")
+                td = dt.timestamp(dt.now()) - tick
+                print(td*10000)
+                print(str(i / 100000) + "*10^5, " + str(len(all_data_dict["id"])) + str(td)[1:] + " sec, pace: " + str(round(i+1 / td, 3)) + " rows/sec")
             if condition['name'] == 'num_rows' and i == condition['value']:
                 break
             if condition['name'] == 'count':
@@ -73,8 +74,8 @@ def txt_to_dataframe(filename, condition):
                 all_data_dict[key['name']].append(value)
     print("finished")
     if condition['name'] == 'count':
-        td = (dt.now() - tick).total_seconds()
-        print(str(i / 10000) + "*10^5, " + str(len(all_data_dict["id"])) + str(round(td, 3)) + " sec, pace: " + str(round(i+1 / td, 3)) + " rows/sec")
+        td = (dt.timestamp(dt.now()) - tick)
+        print(str(i / 10000) + "*10^5, " + str(len(all_data_dict["id"])) + str(round(td, 3))[1:] + " sec, pace: " + str(round(i+1 / td, 3)) + " rows/sec")
         return pd.DataFrame(data=[i+1], columns=['num_of_rows'])
     df = pd.DataFrame.from_dict(all_data_dict).set_index('id')
     return df
@@ -90,11 +91,16 @@ cond_orig = input("enter condition: ")
 if cond_orig == '':
     cond_orig = 'num_rows 200'
 cond = {'name': cond_orig.split()[0], 'value': cond_orig.split()[1]}
+# cond_orig = 'count all'
+# file = "sampled_200.txt"
+# cond = {'name': 'count', 'value': 'all'}
 
-
-
+t0 = dt.timestamp(dt.now())
 
 
 df = txt_to_dataframe(file, cond)
 print(df)
 df.to_csv('sampled_' + cond_orig + '.csv')
+
+t1 = dt.timestamp(dt.now())
+print(t1 - t0)
