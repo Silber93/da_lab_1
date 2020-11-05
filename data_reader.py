@@ -52,7 +52,7 @@ def txt_to_dataframe(filename, condition):
                 print(str(i / 100000) + "*10^5, data collected: " + str(len(all_data_dict["id"])) + ', ' + str(td) + " sec, pace: " + str(round((i+1) / td, 3)) + " rows/sec")
             if condition['name'] == 'num_rows' and i == condition['value']:
                 break
-            if len(all_data_dict) >= 50000:
+            if len(all_data_dict['id']) >= 50000:
                 break
             if condition['name'] == 'count':
                 continue
