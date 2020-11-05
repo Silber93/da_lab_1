@@ -32,5 +32,5 @@ with open(FILE_MAIN) as f:
 with open('sampled_random.txt', 'w') as f:
     for i, line in enumerate(sampled_lines):
         if i % 10000 == 0:
-            print(round(100 * (i / sample_size), 3), '%')
+            print(str(round(100 * (i / float(sample_size)), 3)) + ' %')
         f.write(line)
