@@ -56,7 +56,6 @@ def txt_to_dataframe(filename, condition):
                 value = line.split(key['start'])[1].split(key['end'])[0]
                 if value != condition['value']:
                     continue
-            print(i, line[:-1])  # last char in original line is '\n'
             for key in TEXT_TO_VAL:
                 value = line.split(key['start'])[1].split(key['end'])[0]
                 if value.lower() == 'false':
