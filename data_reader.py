@@ -49,7 +49,6 @@ def txt_to_dataframe(filename, condition):
         for i, line in enumerate(f):
             if i % 100000 == 0:
                 td = (dt.now() - tick).seconds
-                print(td)
                 print(str(i / 100000) + "*10^5, " + str(len(all_data_dict["id"])) + str(round(td, 3)) + " sec, pace: " + str(round(i+1 / (td + 0.0001), 3)) + " rows/sec")
             if condition['name'] == 'num_rows' and i == condition['value']:
                 break
