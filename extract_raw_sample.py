@@ -3,8 +3,8 @@ import random
 FILE_MAIN = '/datashare/busFile'
 SIZE = 237143372
 
-proportion = 1 / 1000
-
+proportion = (1 / 1000)
+print(proportion)
 
 
 sample_size = int(SIZE * proportion)
