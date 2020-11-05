@@ -85,7 +85,7 @@ def txt_to_dataframe(filename, condition):
 file = input("enter file name: ")
 if file == '':
     file = '/datashare/busFile'
-    print(f"chosen file: {file}")
+    print("chosen file: " + file)
 cond_orig = input("enter condition: ")
 if cond_orig == '':
     cond_orig = 'num_rows 200'
