@@ -10,6 +10,7 @@ proportion = 1 / 1000
 sample_size = int(SIZE * proportion)
 print(sample_size)
 
+print("starting")
 
 sampled_idx = sorted(random.sample(range(SIZE), sample_size))
 print(sampled_idx)
