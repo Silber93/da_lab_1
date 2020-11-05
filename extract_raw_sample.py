@@ -23,12 +23,14 @@ with open(FILE_MAIN) as f:
     for i, line in enumerate(f):
         if i % 1000000 == 0:
             print(str(round(100 * (i / SIZE), 3)) + ' % ---> ' + str(len(sampled_lines)))
+        if i >= 10000000:
+            break
         # if i == sampled_idx[j]:
         #     sampled_lines.append(line)
         #     j += 1
         if random.random() <= proportion:
             sampled_lines.append(line)
-
+print("selection completed, saving...")
 with open('sampled_random.txt', 'w') as f:
     for i, line in enumerate(sampled_lines):
         if i % 10000 == 0:
