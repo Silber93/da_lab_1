@@ -8,6 +8,7 @@ proportion = 1 / float(1000)
 
 
 sample_size = int(SIZE * proportion)
+print(proportion)
 print(sample_size)
 
 print("starting")
